@@ -1,9 +1,21 @@
-local QBCore = exports['qb-core']:GetCoreObject()
--- Do not touch this file unless you know what you are doing!
+local function updateServerSkill()
+    local strength = Config.Skills.strength.Current
+    local stamina = Config.Skills.stamina.Current
+    local lung_capacity = Config.Skills.lung_capacity.Current
+    local shotting = Config.Skills.shotting.Current
+    local skillData = {
+        strength = strength,
+        stamina = stamina,
+        lung_capacity = lung_capacity,
+        shotting = shotting
+    }
+    lib.callback.await("skillsystem:update", false, json.encode(skillData))
+end
+
+
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     CreateThread(function()
         FetchSkills()
-
         while true do
             local seconds = Config.UpdateFrequency * 1000
             Wait(seconds)
@@ -11,49 +23,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
             for skill, value in pairs(Config.Skills) do
                 UpdateSkill(skill, value["RemoveAmount"])
             end
-
-            TriggerServerEvent("skillsystem:update", json.encode(Config.Skills))
-        end
-    end)
-
-    RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-        for skill, value in pairs(Config.Skills) do
-            Config.Skills[skill]["Current"] = 0
-        end
-    end)
-
-    CreateThread(function()
-        while true do
-            Wait(math.random(4000,8000))
-            local ped = PlayerPedId()
-            local vehicle = GetVehiclePedIsUsing(ped)
-            local isDead = QBCore.Functions.GetPlayerData().metadata["isdead"]
-            local islaststand = QBCore.Functions.GetPlayerData().metadata["islaststand"]
-            if LocalPlayer.state.isLoggedIn and not isDead and not islaststand then
-                if IsPedRunning(ped) then
-                    UpdateSkill("Stamina", 0.1)
-                elseif IsPedInMeleeCombat(ped) then
-                    local isTargetting, targetEntity = GetPlayerTargetEntity(PlayerId())
-                    if isTargetting and not IsEntityDead(targetEntity) and GetMeleeTargetForPed(ped) ~= 0 then
-                        UpdateSkill("Strength", 0.2)
-                    end
-                elseif IsPedSwimmingUnderWater(ped) then
-                    UpdateSkill("Lung Capacity", 0.5)
-                elseif DoesEntityExist(vehicle) and GetPedInVehicleSeat(vehicle, -1) == ped then
-                    local speed = GetEntitySpeed(vehicle) * 3.6
-                    if GetVehicleClass(vehicle) == 8 or GetVehicleClass(vehicle) == 13 and speed >= 5 then
-                        local rotation = GetEntityRotation(vehicle)
-                        if IsControlPressed(0, 210) then
-                            if rotation.x >= 25.0 then
-                                UpdateSkill("Wheelie", 0.2)
-                            end
-                        end
-                    end
-                    if speed >= 80 then
-                        UpdateSkill("Driving", 0.1)
-                    end
-                end
-            end
+            updateServerSkill()
         end
     end)
 end)
@@ -70,24 +40,6 @@ local function IsBlacklisteddWeapon(weapon)
     return false
 end
 
-CreateThread(function() -- Shooting
-    while true do
-        if LocalPlayer.state.isLoggedIn then
-            local ped = PlayerPedId()
-            local weapon = GetSelectedPedWeapon(ped)
-            if weapon ~= `WEAPON_UNARMED` then
-                if IsPedShooting(ped) and not IsBlacklisteddWeapon(weapon) then
-                    if math.random(1,100) < Config.ShootingSkillChance then
-                        UpdateSkill("Shooting", Config.ShootingSkillUpAmount)
-                    end
-                end
-            else
-                Wait(1000)
-            end
-        end
-        Wait(100)
-    end
-end)
 
 AddEventHandler('onResourceStart', function(resource)
     if resource == GetCurrentResourceName() then
@@ -95,3 +47,65 @@ AddEventHandler('onResourceStart', function(resource)
         FetchSkills()
     end
 end)
+
+AddEventHandler('onResourceStop', function(resource)
+    if resource == GetCurrentResourceName() then
+        updateServerSkill()
+    end
+end)
+
+AddEventHandler('onPlayerDropped', function()
+    updateServerSkill()
+end)
+
+local StaminaCooldown = false
+AddEventHandler('CEventShockingRunningPed', function(_, ped)
+    if StaminaCooldown then return end
+    if ped == cache.ped and math.random(1, 100) <= Config.Skills.stamina.increaseChance then
+        UpdateSkill("stamina", 0.1)
+        StaminaCooldown = true
+        SetTimeout(math.random(Config.Skills.stamina.increaseCooldownMin, Config.Skills.stamina.increaseCooldownMax), function()
+            StaminaCooldown = false
+        end)
+    end
+end)
+
+local ShootingCooldown = false
+AddEventHandler('CEventGunShot', function(_, ped)
+    if ShootingCooldown then return end
+    if ped == cache.ped and math.random(1, 100) <= Config.Skills.shotting.increaseChance then
+        UpdateSkill("shotting", 0.1)
+        ShootingCooldown = true
+        SetTimeout(math.random(Config.Skills.shotting.increaseCooldownMin, Config.Skills.shotting.increaseCooldownMax), function()
+            ShootingCooldown = false
+        end)
+    end
+end)
+
+
+local SterngthCooldown = false
+AddEventHandler('CEventShockingSeenMeleeAction', function(_, ped)
+    if SterngthCooldown then return end
+    if ped == cache.ped and math.random(1, 100) <= Config.Skills.strength.increaseChance then
+        UpdateSkill("strength", 0.1)
+        SterngthCooldown = true
+        SetTimeout(math.random(Config.Skills.strength.increaseCooldownMin, Config.Skills.strength.increaseCooldownMax), function()
+            SterngthCooldown = false
+        end)
+    end
+end)
+
+
+-- local LungCapacityCooldown = false
+-- AddEventHandler('CEventGetOutOfWater', function(_, ped)
+--     print("CEventGetOutOfWater")
+--     if LungCapacityCooldown then return end
+--     if ped == cache.ped then
+--         print("Lung Capacity increased")
+--         UpdateSkill("Lung Capacity", 0.1)
+--         LungCapacityCooldown = true
+--         SetTimeout(math.random(5000, 10000), function()
+--             LungCapacityCooldown = false
+--         end)
+--     end
+-- end)

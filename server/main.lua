@@ -1,25 +1,17 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-
-QBCore.Functions.CreateCallback('skillsystem:fetchStatus', function(source, cb)
-	local Player = QBCore.Functions.GetPlayer(source)
- 
+lib.callback.register('skillsystem:fetchStatus', function()
+	local Player = exports.qbx_core:GetPlayer(source).PlayerData
 	if Player then
-		local status = MySQL.scalar.await('SELECT skills FROM players WHERE citizenid = ?', {Player.PlayerData.citizenid})
-		if status ~= nil then
-			cb(json.decode(status))
-		else
-			cb(nil)
-		end
-	else
-		cb()
+		local row = exports.oxmysql:single_async('SELECT * FROM player_skills WHERE citizenid = ?', { Player.citizenid })
+		if not row then return end
+		return row
 	end
  end)
- 
-RegisterServerEvent('skillsystem:update', function (data)
-     local Player = QBCore.Functions.GetPlayer(source)
 
-	 MySQL.query('UPDATE players SET skills = @skills WHERE citizenid = @citizenid', {
-		['@skills'] = data,
-		['@citizenid'] = Player.PlayerData.citizenid
+
+lib.callback.register('skillsystem:update', function (source, data)
+	local Player = exports.qbx_core:GetPlayer(source).PlayerData
+	data = json.decode(data)
+	MySQL.update('UPDATE player_skills SET stamina = ?, strength = ?, lung_capacity = ?, shotting = ? WHERE citizenid = ?', {
+		data.stamina, data.strength, data.lung_capacity, data.shotting, Player.citizenid
 	})
 end)

@@ -1,6 +1,5 @@
 
-## <h3 align='center'>This is the QBCore Branch</h3>
-## <h3 align='center'>For more support or to see more of our resources you can join the Burn One Studios Discord <a href='https://discord.gg/yKyN9Q3Vmy'>discord</a></h3>
+## <h3 align='center'>The event-driven refactored version for Qbox.</h3>
 
 ### [ What is this? ]
 - A skillsystem based on GTA's existing skills.

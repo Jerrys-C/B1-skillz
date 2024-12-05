@@ -1,62 +1,53 @@
 Config = {}
 
-Config.UpdateFrequency = 600 -- seconds interval between removing values
+Config.UpdateFrequency = 300 -- seconds interval between skill sync to server (database)
 
-Config.Notifications = true -- notification when skill is added
-Config.NotifyType = 'qb' -- notification type: '3d' for 3d Messagebox, 'qb' for QBCore notification, 'tnj' for tnj notification
-
-Config.Debug = false -- debug print
+Config.Debug = true -- debug print
 
 Config.Skillmenu = "skills" -- skillmenu command
 
 Config.UI = true -- set to false for qb-menu
 
-Config.ShootingSkillChance = 33 -- higher this is the more the skill will update max is 100 lowest is 1
-
-Config.ShootingSkillUpAmount = 0.1 --the amount the skill goes up when triggered
-
 Config.Skills = {
-    ["Stamina"] = {
+    ["stamina"] = {
         ["Current"] = 0, -- Default value 
-        ["RemoveAmount"] = -0.3, -- % to remove when updating,
+        ["RemoveAmount"] = 0, -- % to remove when updating,
         ["Stat"] = "MP0_STAMINA", -- GTA stat hashname
         ['icon'] = 'fas fa-walking',
+        ['increaseChance'] = 10, -- 10% chance to increase stamina per event has been triggered
+        ['increaseCooldownMin'] = 10000, -- 10 seconds
+        ['increaseCooldownMax'] = 20000, -- 20 seconds
     },
 
-    ["Strength"] = {
+    ["strength"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = -0.3,
         ["Stat"] = "MP0_STRENGTH",
         ['icon'] = 'fas fa-dumbbell',
+        ['increaseChance'] = 100,
+        ['increaseCooldownMin'] = 10000,
+        ['increaseCooldownMax'] = 20000,
     },
 
-    ["Lung Capacity"] = {
+    ["lung_capacity"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = -0.1,
         ["Stat"] = "MP0_LUNG_CAPACITY",
         ['icon'] = 'fas fa-heartbeat',
+        ['increaseChance'] = 10,
+        ['increaseCooldownMin'] = 10000,
+        ['increaseCooldownMax'] = 20000,
     },
 
-    ["Shooting"] = {
+    ["shotting"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = -0.1,
         ["Stat"] = "MP0_SHOOTING_ABILITY",
         ['icon'] = 'fas fa-bullseye',
+        ['increaseChance'] = 100,
+        ['increaseCooldownMin'] = 10000,
+        ['increaseCooldownMax'] = 20000,
     },
-
-    ["Driving"] = {
-        ["Current"] = 0,
-        ["RemoveAmount"] = -0.5,
-        ["Stat"] = "MP0_DRIVING_ABILITY",
-        ['icon'] = 'fas fa-car-side',
-    },
-
-    ["Wheelie"] = {
-        ["Current"] = 0,
-        ["RemoveAmount"] = -0.2,
-        ["Stat"] = "MP0_WHEELIE_ABILITY",
-        ['icon'] = 'fas fa-wheelchair',
-    }
 }
 
 Config.BlackListedWeapons = { -- Blacklisted Weapons that will not increase players shooting skill
