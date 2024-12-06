@@ -14,6 +14,7 @@ end
 
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    lib.callback.await("skillsystem:initCharacter", source)
     CreateThread(function()
         FetchSkills()
         while true do
@@ -52,6 +53,10 @@ AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
         updateServerSkill()
     end
+end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    updateServerSkill()
 end)
 
 AddEventHandler('onPlayerDropped', function()
