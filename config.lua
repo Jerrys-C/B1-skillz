@@ -2,7 +2,7 @@ Config = {}
 
 Config.UpdateFrequency = 300 -- seconds interval between skill sync to server (database)
 
-Config.Debug = true -- debug print
+Config.Debug = false -- debug print
 
 Config.Skillmenu = "skills" -- skillmenu command
 
@@ -31,10 +31,10 @@ Config.Skills = {
 
     ["lung_capacity"] = {
         ["Current"] = 0,
-        ["RemoveAmount"] = -0.1,
+        ["RemoveAmount"] = 0,
         ["Stat"] = "MP0_LUNG_CAPACITY",
         ['icon'] = 'fas fa-heartbeat',
-        ['increaseChance'] = 10,
+        ['increaseChance'] = 50,
         ['increaseCooldownMin'] = 10000,
         ['increaseCooldownMax'] = 20000,
     },

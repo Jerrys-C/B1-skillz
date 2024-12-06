@@ -96,16 +96,25 @@ AddEventHandler('CEventShockingSeenMeleeAction', function(_, ped)
 end)
 
 
--- local LungCapacityCooldown = false
--- AddEventHandler('CEventGetOutOfWater', function(_, ped)
---     print("CEventGetOutOfWater")
---     if LungCapacityCooldown then return end
---     if ped == cache.ped then
---         print("Lung Capacity increased")
---         UpdateSkill("Lung Capacity", 0.1)
---         LungCapacityCooldown = true
---         SetTimeout(math.random(5000, 10000), function()
---             LungCapacityCooldown = false
---         end)
---     end
--- end)
+local LungCapacityCooldown = false
+local underWaterDamage = 1090519040
+local function OnEntityDamage(args)
+    local victim = args[1]
+    if victim == cache.ped then
+        if args[3] == underWaterDamage and math.random(1, 100) <= Config.Skills.lung_capacity.increaseChance then
+            UpdateSkill("lung_capacity", 0.1)
+            LungCapacityCooldown = true
+            SetTimeout(math.random(Config.Skills.lung_capacity.increaseCooldownMin, Config.Skills.lung_capacity.increaseCooldownMax), function()
+                LungCapacityCooldown = false
+            end)
+        end
+    end
+end
+
+
+AddEventHandler('gameEventTriggered', function (event, args)
+    if LungCapacityCooldown then return end
+	if event == "CEventNetworkEntityDamage" then
+        OnEntityDamage(args)
+    end
+  end)
