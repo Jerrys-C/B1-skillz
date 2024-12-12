@@ -7,7 +7,7 @@ Config.Debug = false -- debug print
 Config.Skillmenu = "skills" -- skillmenu command
 
 Config.Skills = {
-    ["stamina"] = {
+    ["Stamina"] = {
         ["Current"] = 0, -- Default value 
         ["RemoveAmount"] = 0, -- % to remove when updating,
         ["Stat"] = "MP0_STAMINA", -- GTA stat hashname
@@ -17,7 +17,7 @@ Config.Skills = {
         ['increaseCooldownMax'] = 20000, -- 20 seconds
     },
 
-    ["strength"] = {
+    ["Strength"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = -0.3,
         ["Stat"] = "MP0_STRENGTH",
@@ -27,7 +27,7 @@ Config.Skills = {
         ['increaseCooldownMax'] = 20000,
     },
 
-    ["lung_capacity"] = {
+    ["Lung Capacity"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = 0,
         ["Stat"] = "MP0_LUNG_CAPACITY",
@@ -37,7 +37,7 @@ Config.Skills = {
         ['increaseCooldownMax'] = 20000,
     },
 
-    ["shotting"] = {
+    ["Shooting"] = {
         ["Current"] = 0,
         ["RemoveAmount"] = -0.1,
         ["Stat"] = "MP0_SHOOTING_ABILITY",

@@ -2,12 +2,12 @@ local function updateServerSkill()
     local strength = Config.Skills.strength.Current
     local stamina = Config.Skills.stamina.Current
     local lung_capacity = Config.Skills.lung_capacity.Current
-    local shotting = Config.Skills.shotting.Current
+    local shooting = Config.Skills.shooting.Current
     local skillData = {
         strength = strength,
         stamina = stamina,
         lung_capacity = lung_capacity,
-        shotting = shotting
+        shooting = shooting
     }
     lib.callback.await("skillsystem:update", false, json.encode(skillData))
 end
@@ -78,10 +78,10 @@ end)
 local ShootingCooldown = false
 AddEventHandler('CEventGunShot', function(_, ped)
     if ShootingCooldown then return end
-    if ped == cache.ped and math.random(1, 100) <= Config.Skills.shotting.increaseChance then
-        UpdateSkill("shotting", 0.1)
+    if ped == cache.ped and math.random(1, 100) <= Config.Skills.shooting.increaseChance then
+        UpdateSkill("shooting", 0.1)
         ShootingCooldown = true
-        SetTimeout(math.random(Config.Skills.shotting.increaseCooldownMin, Config.Skills.shotting.increaseCooldownMax), function()
+        SetTimeout(math.random(Config.Skills.shooting.increaseCooldownMin, Config.Skills.shooting.increaseCooldownMax), function()
             ShootingCooldown = false
         end)
     end
