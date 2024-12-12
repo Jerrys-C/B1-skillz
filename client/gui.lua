@@ -14,41 +14,30 @@ local function pairsByKeys (t, f)
 end
 
 local function createSkillMenu()
-    skillMenu = {}
-    if Config.UI then
-        for k,v in pairsByKeys(Config.Skills) do
-            skillMenu[#skillMenu + 1] = {
-                    name = k,
-                    icon = v['icon'],
-                    level = v['Current']
-            }
-        end
-        SendNUIMessage({
-            action = "toggleMenu",
-            skills = skillMenu
-        })
-        SetNuiFocus(true,true)
-    else
+    local skillMenu = {}
+
+    skillMenu[#skillMenu + 1] = {
+        title = 'Skills',
+        description = nil,
+        icon = 'fas fa-chart-simple',
+        isHeader = true
+    }
+
+    for k, v in pairsByKeys(Config.Skills) do
         skillMenu[#skillMenu + 1] = {
-            isHeader = true,
-            header = 'Skills',
-            isMenuHeader = true,
-            icon = 'fas fa-chart-simple'
+            title = k,
+            description = string.format('%s%%', v['Current']),
+            icon = v['icon'],
+            args = {skill = k, level = v['Current']}
         }
-        for k,v in pairsByKeys(Config.Skills) do
-            skillMenu[#skillMenu + 1] = {
-                header = ''.. k .. '',
-                txt = ''..v['Current']..'%',
-                icon = ''..v['icon']..'',
-                params = {
-                    args = {
-                        v
-                    }
-                }
-            }
-        end
-        exports['qb-menu']:openMenu(skillMenu)
     end
+
+    lib.registerContext({
+        id = 'skill_menu',
+        title = 'Player Skills',
+        options = skillMenu
+    })
+    lib.showContext('skill_menu')
 end
 
 RegisterNUICallback('close', function()
