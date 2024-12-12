@@ -23,9 +23,3 @@ client_scripts {
     'client/functions.lua',
     'client/gui.lua'
 }
-
-files {
-    "skill-menu/index.html",
-    "skill-menu/app.css",
-    "skill-menu/app.js"
-}
