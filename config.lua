@@ -6,8 +6,6 @@ Config.Debug = false -- debug print
 
 Config.Skillmenu = "skills" -- skillmenu command
 
-Config.UI = true -- set to false for qb-menu
-
 Config.Skills = {
     ["stamina"] = {
         ["Current"] = 0, -- Default value 
