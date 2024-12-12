@@ -5,8 +5,6 @@ description 'B1-Skillz'
 version '1.3.5'
 lua54 'yes'
 
-ui_page "skill-menu/index.html"
-
 shared_scripts {
     '@ox_lib/init.lua',
     '@qbx_core/modules/lib.lua',
